@@ -30,3 +30,17 @@ git reset 的问题
 3. 然后强行刷掉远端的提交，即 git push <远端主机名> <本地分支名>:<远端分支名> --force
 4. 这时候tig再去查看的时候，远端已经是前一个版本的状态了
 5. 这时候再去搞新的提交吧
+
+git branch 合并问题
+
+我们假定分支A需要合并到分支B，合并可能遇到的问题是如果直接合并会导致A和B冲突，因此采取这样的策略
+
+1. 先将B分支的代码合并或重演到A分支上git pull origin B --rebase或者git pull origin B --merge
+2. 此时冲突了，那我们解决冲突
+3. 然后将冲突的文件git add
+4. 因为冲突，重演或者合并暂停了，既然解决了冲突，那我们继续 git rebase --continue或者git merge --continue
+5. 全都解决完成之后我们就可以提交了
+6. 然后进行合并，在分支B上执行git merge A
+7. 执行完成之后再提交，就把A的内容合并到B了，并且同步到了远端的B分支
+8. 可能需要删除远端的A分支，可以使用git push origin --delete A来删除远端的A分支
+9. 可能本地的A分支也不要了，用git branch -d A就可以了
