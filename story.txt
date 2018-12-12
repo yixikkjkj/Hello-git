@@ -3,4 +3,5 @@ i create my first git project
 learning will never end
 well,today is 2018/12/12
 i modify this file for learning git
-
+now i am testing reset and stash
+just for fun
