@@ -1,0 +1,26 @@
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.someclass{
+  color:#fff;
+  background-color: #000000;
+  border-color: #000000;
+  font-family: 'Source Code Pro','Courier New', Courier, monospace;
+  max-width: 600px;
+  
+}
+
+.such_a_div{
+  width: 600px;
+  margin: 0 auto;
+  border-width: 1px;
+  max-width: 620px;
+}
+
+.static{
+  position: static;
+}
+
