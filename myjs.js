@@ -49,3 +49,60 @@ function Person(name, greeting) {
     console.log(greeting + "im" + this.name)
   }
 }
+
+function TestData() {
+  data = [{
+      "num": 1598888888,
+      "time": Date(),
+    },
+    {
+      "num": 222888888,
+      "time": Date(),
+    },
+  ]
+  InputTable(data)
+}
+
+function selectAll() {
+  checklist = document.getElementsByName("rowinfo")
+  for (idx in checklist) {
+    checklist[idx].checked = !checklist[idx].checked
+  }
+}
+
+function DeleteSelected(index) {
+  console.log("没有实现的删除方法")
+}
+
+function InputTable(data) {
+  head = '<input type="checkbox" name="allcheckbox" onclick="selectAll()">'
+  body = '<table>'
+  for (info in data) {
+    body += RowInfo(data[info])
+  }
+  body += '</table>'
+  console.log(head)
+  document.getElementById("inputtable").innerHTML += head + body
+}
+
+function RowInfo(info) {
+  num = info['num']
+  time = info['time']
+  body = '<tr>' +
+    '<td>' + '<input type="checkbox" name="rowinfo" value=' + num + '>' + '</td>' +
+    '<td>' + num.toString() + '</td>' +
+    '<td>' + time + '</td>' +
+    '<td>' + '<button onclick="DeleteSelected()">删除</button>' + '</td>' +
+    '</tr>'
+  return body
+}
+
+function constletvar() {
+  const a = 1
+  let b = 1
+  var c = 1
+}
+
+$(document).ready(function () {
+  alert("readddddddddy!!");
+})

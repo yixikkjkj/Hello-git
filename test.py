@@ -146,3 +146,11 @@ def writeabigfile():
 
 
 # 300+1200+2200+100=3800k
+
+def RiLilv2NianLilv(ri):
+    base = 10000
+    dayMoney = base*ri/10000*(1+ri/10000)**365/((1+ri/10000)**365-1)
+    print dayMoney
+    lixi = dayMoney*365-base
+    print lixi
+    return lixi*100/base

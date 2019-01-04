@@ -7,6 +7,11 @@
 </head>
 
 <body>
+    <tr>
+        <td>
+
+        </td>
+    </tr>
     <a href="#tips">tiaoyue!</a>
     <p>
         this is a paragraph.
@@ -54,7 +59,7 @@
     一组超链接以一个target，那么他们将控制同一个标签页
     
     -->
-    <table border="15">
+    <table border="1">
         <!--当没有设置border或者border为0时无边框-->
         <tr>
             <td>row 1, cell 1</td>
@@ -89,7 +94,52 @@
     <button onclick="ArrayTry()">ArrayTry</button>
     <button onclick="FuncWithArg('Watch Out!','John Cena')">watch out!!</button>
     <button onclick="SwitchVar(12)">switchvvvvvar</button>
-
+    <h1>查找</h1>
+    <label for="test" id="inputtable">
+        <input type="checkbox" name="test" value="selectAll" onclick="selectAll()">
+        <table>
+            <tr>
+                <td>
+                    <input type="checkbox" value=1 onclick="selectOne()">
+                </td>
+                <td>
+                    1,1
+                </td>
+                <td>
+                    1,2
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="checkbox" value=2 onclick="selectOne()">
+                </td>
+                <td>
+                    2,1
+                </td>
+                <td>
+                    2,2
+                </td>
+            </tr>
+        </table>
+    </label>
+    <select class="select">
+        <option value="select" selected="selected">下拉框</option>
+        <option value="radio">单选框</option>
+        <option value="checkbox">多选框</option>
+    </select>
+    <div class="container">
+        <input class="radio" name="programinglanguage" type="radio" value="java" />java
+        <input class="radio" name="programinglanguage" type="radio" value="php" />php
+        <input class="radio" name="programinglanguage" type="radio" checked="checked" value=".net" />.net
+        <input class="radio" name="programinglanguage" type="radio" value="c++" />c++
+    </div>
+    <div class="container">
+        <input class="checkbox" name="frontEnd" type="checkbox" checked="checked" value="react" />react
+        <input class="checkbox" name="frontEnd" type="checkbox" value="vue" />vue
+        <input class="checkbox" name="frontEnd" type="checkbox" value="javascript" />javascript
+        <input class="checkbox" name="frontEnd" type="checkbox" value="sass" />sass
+        <input class="checkbox" name="frontEnd" type="checkbox" value="less" />less
+    </div>
 </body>
 
 </html>
