@@ -2,7 +2,7 @@
 import random
 import pymongo
 from datetime import datetime, timedelta
-
+from test1 import Inkkkk
 
 c = pymongo.MongoClient("mongodb://localhost:27017")
 db = c['sms']
