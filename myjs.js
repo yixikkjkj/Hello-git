@@ -101,8 +101,5 @@ function constletvar() {
   const a = 1
   let b = 1
   var c = 1
+  console.log('asdfasdfasdf');
 }
-
-$(document).ready(function () {
-  alert("readddddddddy!!");
-})
