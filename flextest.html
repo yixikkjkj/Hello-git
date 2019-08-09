@@ -1,0 +1,39 @@
+<!--
+	作者：offline
+	时间：2019-05-23
+	描述：左侧固定，右侧自适应
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+      .container {
+        display: flex;
+        height: 200px;
+      }
+      .title {
+        flex: 0 0 4em;
+        border: 1px solid #000000;	
+      }
+      .content {
+        flex: 1 1 10em;
+        border: 1px solid #000000;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="title">
+        title
+      </div>
+      <div class="content">
+        content
+      </div>
+    </div>
+  </body>
+</html>

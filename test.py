@@ -3,11 +3,17 @@ import random
 import pymongo
 import logging
 from datetime import datetime, timedelta
+from bson import ObjectId
 
 c = pymongo.MongoClient("mongodb://localhost:27017")
-db = c['sms-ntb']
+ntb = c['sms-ntb']
 
-coll = db['detail']
+detail = ntb['detail']
+plan = ntb['plan']
+task = ntb['task']
+
+sms = c['sms']
+act = sms['act_v2']
 
 
 def insert_some_data():
@@ -22,7 +28,7 @@ def insert_some_data():
     less_succ = (696944148, 10, 1)
     more_fail = (696944149, 1000, 990)
     more_succ = (696944150, 1000, 10)
-    coll.remove({})
+    plan.remove({})
     start = datetime(2018, 12, 18)
     end = datetime(2018, 12, 18, 23, 50)
     failstatus = (1, 3, 0x20)
@@ -42,18 +48,18 @@ def insert_some_data():
     }
     for info in (less_fail1, less_fail2, less_succ, more_fail, more_succ):
         data.update({'uid': info[0]})
-        for i in xrange(info[2]):
+        for i in range(info[2]):
             tmp = data.copy()
             tmp['sent_t'] = start + timedelta(seconds=(i + 1) * 60)
             tmp['status'] = failstatus[random.randint(0, 2)]
-            coll.insert(tmp)
-        for i in xrange(info[1] - info[2]):
+            plan.insert(tmp)
+        for i in range(info[1] - info[2]):
             tmp = data.copy()
             tmp['sent_t'] = start + timedelta(seconds=(i + 1) * 60)
-            coll.insert(tmp)
+            plan.insert(tmp)
 
 
-insert_some_data()
+# insert_some_data()
 
 
 def insert_one_data():
@@ -77,4 +83,49 @@ def insert_one_data():
     data['sent_t'] = start
     if random.randint(0, 5) != 0:
         data['status'] = failstatus[random.randint(0, 3)]
-    coll.insert(data)
+    plan.insert(data)
+
+
+# if we do this with redis to mongodb
+
+import abc
+
+
+class TextMeta(type):
+    def __new__(cls, name, bases, cls_dict, **kwargs):
+        return type.__new__(cls, name, bases, cls_dict)
+
+
+class Text(metaclass=TextMeta):
+    """
+    TYPE:类型
+    CONSTANTS:常量
+    """
+    TYPE = 1
+    CONSTANTS = 2
+
+
+class Normal:
+    def __new__(cls, *args, **kwargs):
+        print(cls)
+        print(args)
+        print(kwargs)
+        return super(Normal, cls).__new__(cls)
+
+    def __init__(self, args):
+        print('in initttt')
+        self.args = args
+        print(self.__class__.__name__)
+
+
+from collections import namedtuple
+
+import typing
+
+
+class NamedContent(typing.NamedTuple):
+    name: str
+
+
+if __name__ == "__main__":
+    a = NamedContent()

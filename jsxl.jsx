@@ -1,146 +1,241 @@
-class ProductCategoryRow extends React.Component {
-	render() {
-		return (<tr><th colSpan="2">{this.props.category}</th></tr>);
-	}
+import * as React from "react";
+
+import { BEM } from "../../../common/util";
+import { Icon } from "mz-react-components";
+
+const styles = require("./index.scss");
+const bem = BEM(styles, "promotion");
+
+const click_href = {
+  去群发: "/sms/create?create_type=order",
+  订单催付: "/sms/notice?type=33",
+  订单关怀: "/sms/notice?type=49",
+  发货提醒: "/sms/notice?type=65",
+  评价提醒: "/sms/notice?type=113",
+  "群发记录/效果": "/sms/list",
+  催付效果: "/sms/notice?type=33#page=stats_33"
+};
+
+const all_step_text = {
+  1: [
+    {
+      time: "5.25-5.28",
+      title: "预售",
+      content: ["预售利益点通知，支付定金", "老客激活，收藏/加购提升"]
+    },
+    {
+      time: "5.29-5.30",
+      title: "预热",
+      content: ["活动新品预告，优惠券发放", "618活动预告，利益点透出"]
+    },
+    {
+      time: "5.31",
+      title: "预热",
+      no_multi_send: true,
+      content: [
+        "开启订单催付，提升下单转化",
+        "开启付款关怀、发货提醒等，提升购物体验"
+      ],
+      href: [["订单催付"], ["付款关怀", "发货提醒"]]
+    }
+  ],
+  2: [
+    {
+      time: "6.1-6.2",
+      title: "开门红",
+      content: ["预售尾款支付通知", "618第一波开门红活动通知"]
+    },
+    {
+      time: "6.3-6.12",
+      title: "品类日",
+      content: ["618品类活动通知，突出利益点", "618品类活动倒计时"]
+    },
+    {
+      time: "6.13-6.15",
+      title: "狂欢预热",
+      content: ["618狂欢活动利益点预告", "活动优惠券发放，提升加购/收藏"]
+    },
+    {
+      time: "6.16-6.18",
+      title: "狂欢日",
+      content: ["第二件半价/前N件XX元活动通知", "618活动倒计时，最后冲刺"]
+    }
+  ],
+  3: [
+    {
+      time: "6.19",
+      title: "返场开始",
+      content: ["返场活动通知，突出返场利益点", "图层开启评价提醒，提升DSR"],
+      href: [[], ["评价提醒"]]
+    },
+    {
+      time: "6.20",
+      title: "返场结束",
+      content: ["返场活动倒计时，最后冲量", "618结束客户关怀，表示感谢"]
+    },
+    {
+      time: "6.21",
+      title: "数据复盘",
+      content: ["群发短信效果分析，群发记录/效果", "催付效果分析，催付效果"],
+      href: [["群发记录/效果"], ["催付效果"]]
+    }
+  ]
+};
+
+const replaceHref = (msg, href_list) => {
+  let result = [msg];
+  for (const href_name of href_list) {
+    let temp = [];
+    for (const temp_str of result) {
+      if (typeof temp_str !== "string") {
+        temp.push(temp_str);
+        continue;
+      }
+      let last_index = temp_str.lastIndexOf(href_name);
+      if (last_index == -1) {
+        temp.push(temp_str);
+        continue;
+      }
+      temp.push(temp_str.slice(last_index + href_name.length, temp_str.length));
+      temp.push(
+        <a
+          data-event-action={href_name}
+          href={click_href[href_name]}
+          key={href_name}
+        >
+          {href_name}
+        </a>
+      );
+      temp.push(temp_str.slice(0, last_index));
+    }
+    result = temp;
+  }
+  result.reverse();
+  return result;
+};
+
+export default class SmsPromoGuide extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.default_step = this.getStep(moment());
+    this.state = { step: this.default_step };
+  }
+
+  getStep = now => {
+    return 1;
+    const m_525 = moment("2019-05-25");
+    const m_601 = moment("2019-06-01");
+    const m_619 = moment("2019-06-19");
+    const m_621 = moment("2019-06-21");
+    if (now.isBefore(m_525)) {
+      return -1;
+    } else if (now.isBefore(m_601)) {
+      return 1;
+    } else if (now.isBefore(m_619)) {
+      return 2;
+    } else if (now.isBefore(m_621)) {
+      return 3;
+    } else {
+      return -1;
+    }
+  };
+
+  renderTitle = (time, title) => {
+    return (
+      <div className={bem("verticalAlign")}>
+        <div className={bem("title")}>
+          <p>{time}</p>
+          <p>{title}</p>
+        </div>
+      </div>
+    );
+  };
+
+  renderContent = (content, href, is_active) => {
+    return (
+      <div className={bem("verticalAlign")}>
+        <ul className={bem("content")}>
+          {content.map((doc, idx) => {
+            return (
+              <li key={idx}>
+                <span>
+                  {is_active && href ? replaceHref(doc, href[idx]) : doc}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    );
+  };
+
+  renderStep = step => {
+    let is_active = false;
+    let block_css_name = "negativeBlock";
+    if (step == this.state.step) {
+      is_active = true;
+      block_css_name = "activeBlock";
+    }
+    const step_text = all_step_text[step];
+    return (
+      <div
+        onMouseEnter={() => {
+          this.setState({ step });
+        }}
+        className={bem(block_css_name, step.toString())}
+      >
+        <div className={bem("actionContainer")}>
+          {step_text.map((text, index) => {
+            const content_block_css_name =
+              text.no_multi_send && is_active
+                ? "contentBlockNoMulti"
+                : "contentBlock";
+            return (
+              <div
+                key={index}
+                className={bem("actionLine", step_text.length.toString())}
+                data-ga-options={"actionPrefix: +" + text.title + "_"}
+              >
+                <div className={bem(block_css_name, "titleBlock")}>
+                  {this.renderTitle(text.time, text.title)}
+                </div>
+                <div className={bem(block_css_name, content_block_css_name)}>
+                  {this.renderContent(text.content, text.href, is_active)}
+                </div>
+                {!is_active || text.no_multi_send ? (
+                  ""
+                ) : (
+                  <div className={bem("multiSendBlock")}>
+                    <a data-event-action="去群发" href={click_href["去群发"]}>
+                      去群发 <Icon name="xiayiye" />
+                    </a>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
+  render() {
+    if (this.state.step < 0) {
+      return "";
+    }
+
+    return (
+      <div
+        data-ga-options="category: 短信工作台, actionPrefix: 618引导_"
+        className={bem("")}
+        onMouseLeave={() => {
+          this.setState({ step: this.default_step });
+        }}
+      >
+        {this.renderStep(1)}
+        {this.renderStep(2)}
+        {this.renderStep(3)}
+      </div>
+    );
+  }
 }
-
-class ProductRow extends React.Component {
-	render() {
-		var name = this.props.product.stocked ?
-			this.props.product.name :
-			<span style={{ color: 'red' }}>
-				{this.props.product.name}
-			</span>;
-		return (
-			<tr>
-				<td>{name}</td>
-				<td>{this.props.product.price}</td>
-			</tr>
-		);
-	}
-}
-
-class ProductTable extends React.Component {
-	render() {
-		var rows = [];
-		var lastCategory = null;
-		console.log(this.props.inStockOnly)
-		this.props.products.forEach((product) => {
-			if (product.name.indexOf(this.props.filterText) === -1 || (!product.stocked && this.props.inStockOnly)) {
-				return;
-			}
-			if (product.category !== lastCategory) {
-				rows.push(<ProductCategoryRow category={product.category} key={product.category} />);
-			}
-			rows.push(<ProductRow product={product} key={product.name} />);
-			lastCategory = product.category;
-		});
-		return (
-			<table>
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>Price</th>
-					</tr>
-				</thead>
-				<tbody>{rows}</tbody>
-			</table>
-		);
-	}
-}
-
-class SearchBar extends React.Component {
-	constructor(props) {
-		super(props);
-		this.handleFilterTextInputChange = this.handleFilterTextInputChange.bind(this);
-		this.handleInStockInputChange = this.handleInStockInputChange.bind(this);
-	}
-
-	handleFilterTextInputChange(e) {
-		this.props.onFilterTextInput(e.target.value);
-	}
-
-	handleInStockInputChange(e) {
-		this.props.onInStockInput(e.target.checked);
-	}
-
-	render() {
-		return (
-			<form>
-				<input
-					type="text"
-					placeholder="Search..."
-					value={this.props.filterText}
-					onChange={this.handleFilterTextInputChange}
-				/>
-				<p>
-					<input
-						type="checkbox"
-						checked={this.props.inStockOnly}
-						onChange={this.handleInStockInputChange}
-					/>
-					{' '}
-					Only show products in stock
-        </p>
-			</form>
-		);
-	}
-}
-
-class FilterableProductTable extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			filterText: '',
-			inStockOnly: false
-		};
-
-		this.handleFilterTextInput = this.handleFilterTextInput.bind(this);
-		this.handleInStockInput = this.handleInStockInput.bind(this);
-	}
-
-	handleFilterTextInput(filterText) {
-		this.setState({
-			filterText: filterText
-		});
-	}
-
-	handleInStockInput(inStockOnly) {
-		this.setState({
-			inStockOnly: inStockOnly
-		})
-	}
-
-	render() {
-		return (
-			<div>
-				<SearchBar
-					filterText={this.state.filterText}
-					inStockOnly={this.state.inStockOnly}
-					onFilterTextInput={this.handleFilterTextInput}
-					onInStockInput={this.handleInStockInput}
-				/>
-				<ProductTable
-					products={this.props.products}
-					filterText={this.state.filterText}
-					inStockOnly={this.state.inStockOnly}
-				/>
-			</div>
-		);
-	}
-}
-
-
-var PRODUCTS = [
-	{ category: 'Sporting Goods', price: '$49.99', stocked: true, name: 'Football' },
-	{ category: 'Sporting Goods', price: '$9.99', stocked: true, name: 'Baseball' },
-	{ category: 'Sporting Goods', price: '$29.99', stocked: false, name: 'Basketball' },
-	{ category: 'Electronics', price: '$99.99', stocked: true, name: 'iPod Touch' },
-	{ category: 'Electronics', price: '$399.99', stocked: false, name: 'iPhone 5' },
-	{ category: 'Electronics', price: '$199.99', stocked: true, name: 'Nexus 7' }
-];
-
-ReactDOM.render(
-	<FilterableProductTable products={PRODUCTS} />,
-	document.getElementById('container')
-);

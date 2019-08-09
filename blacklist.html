@@ -1,26 +1,36 @@
 <html>
-  <head>
-    <link rel="stylesheet" href="mystyle.css" />
-    <script src="myjs.js"></script>
-  </head>
 
-  <body>
-    <div id="wrapper">
-      <div id="header">
-        header
-      </div>
-      <div id="body">
-        <div id="aside">
-          <div class="inner">aside</div>
-        </div>
-        <div id="main">
-          <div class="inner">main</div>
-        </div>
-      </div>
-      <div id="footer">footer</div>
+<head>
+  <link rel="stylesheet" href="mystyle.css" />
+  <script src="myjs.js"></script>
+</head>
+
+<body>
+  <div id="wrapper">
+    <div id="header">
+      header
     </div>
-    <span onclick="constletvar()">
-      heeeeee
-    </span>
-  </body>
+    <div id="body">
+      <div id="aside">
+        <div class="inner">aside</div>
+      </div>
+      <div id="main">
+        <div class="inner">
+          <form submit="test_for_selector();">
+            <select onchange="submitForm();">
+              <option value="30">30天内</option>
+              <option value="90">90天内</option>
+              <option value="-1">至今</option>
+            </select>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div id="footer">
+      footer
+    </div>
+  </div>
+
+</body>
+
 </html>

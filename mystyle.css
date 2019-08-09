@@ -54,26 +54,43 @@
   margin: 0 auto;
   background: #f60;
 }
+
 #body {
   width: 980px;
   height: 500px;
   margin: 0 auto;
 }
+
 #aside {
   float: left;
   width: 240px;
   height: 500px;
   background: #ccc;
 }
+
 #main {
   float: left;
   width: 740px;
   height: 500px;
-  background: orange;
+  background: #f0f0f0;
 }
+
 #footer {
   width: 980px;
   height: 90px;
   margin: 0 auto;
   background: #08f;
+}
+
+.test-flex-wrapper {
+  width: 1200px;
+  border: #000000 solid 1px;
+  display: flex;
+  height: fit-content;
+}
+
+.test-flex {
+  height: 100px;
+  width: 300px;
+  border: #f60 solid 4px;
 }

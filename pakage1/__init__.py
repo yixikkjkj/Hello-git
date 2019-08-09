@@ -6,8 +6,8 @@ from bson import ObjectId
 from datetime import datetime, timedelta
 
 c = pymongo.MongoClient("mongodb://localhost:27017")
-db = c['sms']
-coll = db['act_conversion_order_v2']
+db = c['sms-ntb']
+coll = db['plan']
 
 uid = 696944147
 act_id = ObjectId('5cb986c67ba1f13f49cdf240')
