@@ -78,3 +78,6 @@ if __name__ == "__main__":
         x, y = profile(*args)
         print("%-11s serialize: %0.3f  deserialize: %0.3f  total: %0.3f" %
               (name, x, y, x + y))
+
+a = list(range(100))
+a.sort(key=lambda info: info, reverse=True)

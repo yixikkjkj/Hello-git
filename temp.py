@@ -50,29 +50,33 @@ if __name__ == "__main__":
 }
 
 
-@celery.task
+@cli.command()
 def duplicate_marker_test():
+    from datetime import datetime
+    from app.models.constants import ACT
     from app.ext.cache import cache_service
     from app.utils.cache_list import DictListCache
     from app.base.marker import DuplicateCacheMarker
     from app.base.predictor.order.constants import ORDER_FILTERS_KEYS, START_KEY, END_KEY
     mobiles = []
     start_mobile = 13000000000
-    count = 100000
+    count = 100002
 
     for mobile_num in range(start_mobile, start_mobile + count):
-        tmp = {ACT.DEFAULT_DATA_KEY: str(mobile_num)}
-        for key in ORDER_FILTERS_KEYS:
-            tmp[key] = 0
-        tmp[START_KEY] = datetime.now()
-        tmp[END_KEY] = datetime.now()
+        tmp = {
+            ACT.DEFAULT_DATA_KEY: str(start_mobile),
+            'buyer_nick': 'w2589031968',
+            'tid': '262192353564100243'
+        }
         mobiles.append(tmp)
 
     with DictListCache(cache_service, 'duplicated_marker_test', 'w',
                        ACT.DEFAULT_DATA_KEY) as cache:
         cache.extend(mobiles)
+        click.echo('>> duplicate marker starting...')
         with DuplicateCacheMarker(cache) as marker:
             marker.mark(exact=True)
+    click.echo('>> duplicate marker done!')
 
 
 @cli.command()
@@ -174,3 +178,84 @@ def json_loads_order_test():
     loads_et = time.time()
     print('cost time is dumps [%s] loads [%s]' % (dumps_et - st,
                                                   loads_et - dumps_et))
+
+    channel.create_channel({
+        'api_key': 'ada7dbdc3738234eb6b342486e1ac6e4'
+    }, 300, BASE_SENDER.PROVIDER.YUNPIAN, BASE_SENDER.MESSAGE_TYPE.MARKETING)
+
+
+@cli.command()
+def fix_process_notice_report():
+    from datetime import datetime, timedelta
+    from app.actions.act import process_notice_detail_msg
+    now = datetime.now()
+    end = datetime(now.year, now.month, now.day)
+    start = end - timedelta(days=1)
+    return process_notice_detail_msg(start, end)
+
+
+@cli.command()
+def build_notice_test_data():
+    from datetime import datetime, timedelta
+    from app.models.constants import SUB_ACCOUNT, DETAIL_STATUS
+    from app.models import db
+    sent_t = datetime.now() - timedelta(days=1)
+
+    details = []
+    for x in range(90):
+        detail = db.Detail()
+        detail.update({
+            'sub_account': SUB_ACCOUNT.TONGZHI,
+            'status': DETAIL_STATUS.DELIVERED,
+            'uid': 696944148,
+            'sent_t': sent_t,
+        })
+        details.append(detail)
+    for x in range(100):
+        detail = db.Detail()
+        detail.update({
+            'sub_account': SUB_ACCOUNT.TONGZHI,
+            'status': DETAIL_STATUS.SENDING,
+            'uid': 696944149,
+            'sent_t': sent_t,
+        })
+        details.append(detail)
+    rlt = db.Detail.insert_many(details)
+    print(rlt)
+
+
+import sys
+
+
+def get_size(obj, seen=None):
+    """Recursively finds size of objects"""
+    size = sys.getsizeof(obj)
+    if seen is None:
+        seen = set()
+    obj_id = id(obj)
+    if obj_id in seen:
+        return 00.
+    # Important mark as seen *before* entering recursion to gracefully handle
+    # self-referential objects
+    seen.add(obj_id)
+    if isinstance(obj, dict):
+        size += sum([get_size(v, seen) for v in obj.values()])
+        size += sum([get_size(k, seen) for k in obj.keys()])
+    elif hasattr(obj, '__dict__'):
+        size += get_size(obj.__dict__, seen)
+    elif hasattr(obj, '__iter__') and not isinstance(obj,
+                                                     (str, bytes, bytearray)):
+        size += sum([get_size(i, seen) for i in obj])
+    return size
+
+
+data_list = []
+for mobile in range(13000000000, 13000110000):
+    tmp = {
+        'receiver_mobile': str(mobile),
+        'buyer_nick': 'w2589031968',
+        'tid': '262192353564100243',
+    }
+    data_list.append(tmp)
+
+get_size(data_list)

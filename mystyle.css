@@ -89,8 +89,21 @@
   height: fit-content;
 }
 
-.test-flex {
-  height: 100px;
+.test-flex {}
+
+.test-flex-part {
+  width: 1200px;
+}
+
+.test-flex-title {
+  display: inline-block;
   width: 300px;
-  border: #f60 solid 4px;
+  text-align: end;
+  padding-right: 80px;
+}
+
+.test-flex-content {
+  display: inline-block;
+  width: 800px;
+  flex: 1;
 }
