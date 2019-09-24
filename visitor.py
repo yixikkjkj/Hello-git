@@ -1,9 +1,4 @@
 def filter_array(target_list, filter_list):
-    # [], []
-    # [1, 2, 3], []
-    # [], [1, 2, 3]
-    # [1, 2, 3], [2]
-    # [1, 2, 3], [1, 3]
     i, j = 0, 0
     result_list = []
     while i < len(target_list) and j < len(filter_list):
@@ -31,34 +26,18 @@ def is_run_nian(year):
 
 
 def get_expire_day(year, month, day, period=1):
-    # >>> get_expire_day(2016,1,31,1)
-    # (2016, 2, 29)
-    # >>> get_expire_day(2016,1,31,3)
-    # (2016, 4, 30)
-    # >>> get_expire_day(2016,10,31,3)
-    # (2017, 1, 31)
-    # >>> get_expire_day(2016,11,30,3)
-    # (2017, 2, 28)
-    # >>> get_expire_day(2015,11,30,3)
-    # (2016, 2, 29)
     end_year = int(year + (month + period - 1) / 12)
     end_month = (month + period - 1) % 12 + 1
 
     month_days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     if is_run_nian(end_year):
         month_days[1] = 29
-    
+
     end_day = min(day, month_days[end_month - 1])
     return (end_year, end_month, end_day)
 
 
 def get_days(year, month, day, period=1):
-    # >>> get_days(2015, 11, 30)
-    # 30
-    # >>> get_days(2015, 11, 30, 3)
-    # 90
-    # >>> get_days(2015, 12, 1, 3)
-    # 90
     month_days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     total_days = 0
     if month == 2 and is_run_nian(year):
@@ -72,7 +51,7 @@ def get_days(year, month, day, period=1):
         else:
             month_days[1] = 28
         total_days += month_days[tmp_month - 1]
-    
+
     end_month = (month + period - 1) % 12 + 1
     end_year = year + int((month + period - 1) / 12)
     if end_month == 2 and is_run_nian(end_year):
