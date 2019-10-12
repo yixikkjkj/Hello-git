@@ -259,3 +259,92 @@ for mobile in range(13000000000, 13000110000):
     data_list.append(tmp)
 
 get_size(data_list)
+
+
+@cli.command()
+def build_some_details():
+    from bson import ObjectId
+    from datetime import datetime, timedelta
+    from app.models.constants import DETAIL_STATUS, SUB_ACCOUNT
+    from app.models import db
+    uid = 696944147
+    act_id = ObjectId()
+    text = 'recent_sent_test_text'
+    sent_t = datetime.now()
+    sub_account = SUB_ACCOUNT.YINGXIAO
+    success_status = DETAIL_STATUS.DELIVERED
+    fail_status = DETAIL_STATUS.FAILED  # DELIVERED
+    count = 1
+
+    start_t = datetime.now() - timedelta(days=21)
+    start_mobile_num = 13000000000
+    success_mobile_count = 10000
+    fail_mobile_count = 10000
+    for day in xrange(20):
+        details = []
+        sent_t = start_t + timedelta(days=day)
+        for mobile_index in xrange(success_mobile_count):
+            detail = db.Detail()
+            detail.update({
+                'uid': uid,
+                'act_id': act_id,
+                'mobile': str(start_mobile_num + mobile_index),
+                'text': text,
+                'sent_t': sent_t,
+                'status': success_status,
+                'sub_account': sub_account,
+                'count': count,
+            })
+            details.append(detail)
+
+        for mobile_index in xrange(success_mobile_count,
+                                   success_mobile_count + fail_mobile_count):
+            detail = db.Detail()
+            detail.update({
+                'uid': uid,
+                'act_id': act_id,
+                'mobile': str(start_mobile_num + mobile_index),
+                'text': text,
+                'sent_t': sent_t,
+                'status': fail_status,
+                'sub_account': sub_account,
+                'count': count,
+            })
+            details.append(detail)
+
+        db.Detail.insert_many(details)
+
+
+@cli.command()
+def recent_marker_test():
+    from datetime import datetime
+    from app.models.constants import ACT
+    from app.ext.cache import cache_service
+    from app.utils.cache_list import DictListCache
+    from app.base.marker import RecentFailedMarker
+    mobiles = []
+    start_mobile = 13000000000
+    count = 100002
+
+    for mobile_num in range(start_mobile, start_mobile + count):
+        tmp = {
+            ACT.DEFAULT_DATA_KEY: str(mobile_num),
+            'buyer_nick': 'w2589031968',
+            'tid': '262192353564100243'
+        }
+        mobiles.append(tmp)
+
+    with DictListCache(cache_service, 'duplicated_marker_test', 'w',
+                       ACT.DEFAULT_DATA_KEY) as cache:
+        cache.extend(mobiles)
+        click.echo('>> duplicate marker starting...')
+        with RecentFailedMarker(696944147, 7) as marker:
+            marker.mark_seq(cache, data_key='receiver_mobile', exact=True)
+    click.echo('>> duplicate marker done!')
+
+
+@cli.command()
+def fix_parse_upload_file():
+    from app.actions.oss import download_oss_file
+    file_key = 'Sms_2200696743476_1569400847780.txt'
+    download_oss_file(file_key)

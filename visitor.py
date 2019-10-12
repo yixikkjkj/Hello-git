@@ -15,7 +15,7 @@ def filter_array(target_list, filter_list):
     return result_list
 
 
-def is_run_nian(year):
+def is_leap_year(year):
     if year % 4 != 0:
         return False
     if year % 100 != 0:
@@ -30,7 +30,7 @@ def get_expire_day(year, month, day, period=1):
     end_month = (month + period - 1) % 12 + 1
 
     month_days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-    if is_run_nian(end_year):
+    if is_leap_year(end_year):
         month_days[1] = 29
 
     end_day = min(day, month_days[end_month - 1])
@@ -40,13 +40,13 @@ def get_expire_day(year, month, day, period=1):
 def get_days(year, month, day, period=1):
     month_days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     total_days = 0
-    if month == 2 and is_run_nian(year):
+    if month == 2 and is_leap_year(year):
         month_days[1] = 29
     total_days = month_days[month - 1] - day + 1
     for index in range(1, period):
         tmp_month = (month + index - 1) % 12 + 1
         tmp_year = year + int((month + index - 1) / 12)
-        if tmp_month == 2 and is_run_nian(tmp_year):
+        if tmp_month == 2 and is_leap_year(tmp_year):
             month_days[1] = 29
         else:
             month_days[1] = 28
@@ -54,7 +54,7 @@ def get_days(year, month, day, period=1):
 
     end_month = (month + period - 1) % 12 + 1
     end_year = year + int((month + period - 1) / 12)
-    if end_month == 2 and is_run_nian(end_year):
+    if end_month == 2 and is_leap_year(end_year):
         month_days[1] = 29
     total_days += min(day, month_days[end_month - 1]) - 1
     return total_days
