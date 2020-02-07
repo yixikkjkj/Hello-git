@@ -124,3 +124,82 @@ function test_for_select(e, v, d) {
   console.log(v);
   console.log(d);
 }
+
+function draw_canvas() {
+  var ca = document.getElementById('huabu');
+  var ctx = ca.getContext('2d');
+  ctx.fillRect(10, 10, 50, 50);
+}
+
+
+function send_request() {
+  var formData = new FormData();
+  formData.append('File', $('#file_input')[0].files[0], '签名自有证明.docx');
+  formData.append('StoreFile', 'true');
+  console.log($('#file_input')[0].files[0]);
+  // $.ajax({
+  //   url: 'https://team02.hackathon.ebincr.com/convert/docx/to/pdf?Secret=Y2qbHnYrTZj1aX8t',
+  //   data: formData,
+  //   processData: false,
+  //   contentType: false,
+  //   method: 'POST',
+  //   success: function (data) {
+  //     console.log(data);
+  //   }
+  // });
+}
+
+function upload_file() {
+  $('#file_input').click();
+}
+
+
+// curl -i -X POST -d '{"apikey": "f23cfb0cb34a42ed8b9ab82bc4feba17","file": "a.docx", "filename":"a.docx", "outputformat":"pdf", "input": "raw"}' http://api.convertio.co/convert
+
+// curl -i -X GET http://api.convertio.co/convert/afd58454e0731b0f2cdac3723b966647/dl
+// curl -i -X POST -d '{"apikey": "f23cfb0cb34a42ed8b9ab82bc4feba17", "outputformat":"pdf", "input": "upload"}' http://api.convertio.co/convert
+
+// 328d6b2a4078990366dfcc1210b4e94a
+
+// curl -i -X PUT -d '{"step":"convert", "input": "upload"}' http://api.convertio.co/convert/328d6b2a4078990366dfcc1210b4e94a/a
+
+
+  // var formData = new FormData();
+  // formData.append('File', $('#file_input')[0].files[0], '签名自由证明.docx');
+  // console.log($('#file_input')[0].files[0]);
+  // var reader = new FileReader();
+  // reader.readAsDataURL($('#file_input')[0].files[0]);
+  // reader.onload = function (event) {
+  //   console.log(this.result);
+  //   console.log(this.result.indexOf(','));
+  //   $.ajax({
+  //     url: 'https://api.convertio.co/convert',
+  //     data: {
+  //       apikey: 'f23cfb0cb34a42ed8b9ab82bc4feba17',
+  //       input: 'upload',
+  //       outputformat: 'pdf',
+  //     },
+  //     method: 'POST',
+  //     success: function (data) {
+  //       console.log('succcccc');
+  //       console.log(data);
+  //       $.ajax({
+  //         url: 'https://api.convertio.co/convert/' + data.id + '/' + $('#file_input')[0].files[0].name,
+  //         data: $('#file_input')[0].files[0],
+  //         method: 'PUT',
+  //         success: function (data) {
+  //           console.log('succccc');
+  //           console.log(data);
+  //         },
+  //         error: function (data) {
+  //           console.log('errrrorr');
+  //           console.log(data);
+  //         },
+  //       });
+  //     },
+  //     error: function (data) {
+  //       console.log('errrrorr');
+  //       console.log(data);
+  //     },
+  //   });
+  // }

@@ -18,11 +18,20 @@ channel = ntb['channel']
 sms = c['sms']
 act = sms['act_v2']
 
+record.find({
+    'user_id': ObjectId('5ceb967f4f9fc9321a88ab59'),
+    'schedule_t': {
+        '$lt': datetime(2019, 12, 27),
+        '$gte': datetime(2019, 1, 1),
+    },
+}).explain()
+
 
 def show_all(coll):
     for data in coll.find():
         print(data)
 
+channel.update_many({'_id': ObjectId('5dd3c09468c8d54b6eb09a88')}, {'$pop': {'extends': -1}})
 
 update_result = record.update_many(
     {
@@ -69,5 +78,73 @@ def get_unique_id():
 def check_shenfenzheng(shenfen_str):
     xishu = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2]
     tmp = sum([xishu[index] * int(shenfen_str[index]) for index in range(17)])
+    print(tmp)
     check = ['1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2']
+    print(check[tmp % 11])
     assert shenfen_str[17] == check[tmp % 11]
+
+
+def send_yunpian_sms():
+    import requests
+    url = 'https://sms.yunpian.com/v2/sms/batch_send.json'
+    data = {
+        'apikey': '0a8761f84c1e39ecbf220eed1abdc71e',
+        'mobile': ','.join(['15972096311']),
+        'text': '【美折】您的验证码是：3278，如非本人请无视',
+        'extend': '101',
+    }
+    res = requests.post(url, data, timeout=30)
+    print(res.status_code)
+    print(res.json())
+
+data = {
+    'text': '【美折】您的验证码是 #code#',
+    'api_key': '5daeb6100d21bd6215da5e7d',
+}
+
+def batch_send():
+    import time
+    import hashlib
+    import requests
+    data = {
+        'mobiles': '15972096311',
+        'text': '【美折】您的验证码是2569，请在5分钟内使用'
+    }
+    data['ts'] = int(time.time())
+    data['api_key'] = '5daeb6100d21bd6215da5e7d'
+    v = '|'.join(["{}={}".format(k, v) for k, v in sorted(data.items())])
+    str_to_sign = "{}_{}".format(v, 'PGG1sdgUCb')
+    sign = hashlib.md5(str_to_sign.encode()).hexdigest()
+    data.update(sign=sign)
+
+    r = requests.post('http://localhost:8010/api/sender/batch_send', json=data)
+    print(r.json())
+
+
+def reply():
+    # import requests
+    # from urllib import parse
+    # url = 'http://0.0.0.0:8010/hooks/sender/yunpian/reply/5dd3c09468c8d54b6eb09a8a'
+    # yunpian_replys = {
+    #     "id": "5de860c8da2cac78dc2e0339",
+    #     "mobile": "18656053729",
+    #     "text": "TD",
+    #     "reply_time": "2019-12-05+09:43:36",
+    #     "extend": "001",
+    #     "base_extend": "552140",
+    #     "_sign": "082538102e452ec2ffd7e21006514979",
+    # }
+    # r = requests.post(url, {'sms_reply': parse.quote(str(yunpian_replys).replace('\'', '\"'))})
+    # print(r)
+    chuanglan_replys = {
+        "receiver": "null",
+        "pswd": "null",
+        "moTime": "1912090957",
+        "mobile": "13739167483",
+        "msg": "T",
+        "destcode": "10690619198402001",
+        "spCode": "10690619198402",
+        "notifyTime": "191209095752",
+    }
+    r = requests.post('http://0.0.0.0:8010/hooks/sender/chuanglan/reply/5dd3c09468c8d54b6eb09a88', chuanglan_replys)
+    print(r)

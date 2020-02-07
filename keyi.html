@@ -3,6 +3,7 @@
 
 <head>
     <link rel="stylesheet" type="text/css" href="mystyle.css">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="myjs.js"></script>
 </head>
 
@@ -24,6 +25,8 @@
     <hr>
     <p style="background-color:aqua">paragraphhhhh</p>
     <a href="http://www.baidu.com">百度一下</a>
+    <a href="http://www.baidu.com" role="button">百度一下</a>
+
     <p>以下内容引用自 WWF 的网站：</p>
     <blockquote cite="http://www.worldwildlife.org/who/index.html">
         五十年来，WWF 一直致力于保护自然界的未来。
@@ -181,6 +184,13 @@
         <li>xxxx</li>
     </ul>
 
+    <canvas id="huabu" width="150" height="150"></canvas>
+    <button onclick="draw_canvas()">show canvas</button>
+    <button onclick="send_request()">send send_request</button>
+    <input type="file" id="file_input" style="display: none;"/>
+    <button onclick="upload_file()">
+        上传
+    </button>
 
 </body>
 
