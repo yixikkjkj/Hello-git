@@ -392,3 +392,14 @@ def test_orm():
     # todo delete plan
     plan = plan_orm.delete_plan(access_token, plan['plan_id'])
     print(plan)
+
+
+@cli.command()
+def testttt():
+    from datetime import datetime
+    from app.orm.account import plan_orm, unit_orm
+    access_token = '980b326288f44fd5890f88e338533fde6ce13cb6'
+    plan_id = 21678280
+    unit_id = 81343978
+    plan_orm.sync_plan_statistics(access_token, plan_id, begin_date=datetime(2020, 2, 1))
+    unit_orm.sync_unit_statistics(access_token, plan_id, unit_id, begin_date=datetime(2020, 2, 1))

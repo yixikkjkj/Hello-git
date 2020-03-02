@@ -1,47 +1,155 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" href="mystyle.css" />
-  <title></title>
+    <title>鼠标拖拽多选功能</title>
+    <script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+    <style type="text/css">
+        *{
+            box-sizing:border-box;
+        }
+        ul{
+            width:500px;
+            height:auto;
+            margin:0;
+            padding:20px;
+            font-size: 0;
+            /*需设置定位*/
+            position:relative;
+        }
+        li{
+            width:70px;
+            height:70px;
+            padding:0;
+            display:inline-block;
+            vertical-align: top;
+            font-size: 13px;
+            border:1px solid #d9d9d9;
+        }
+        #moveSelected{
+            position:absolute;
+            background-color: blue;
+            opacity:0.3;
+            border:1px dashed #d9d9d9;
+            top:0;
+            left:0;
+        }
+        .selected{
+            background-color: pink;
+        }
+    </style>
 </head>
-
 <body>
-  <div class="test-flex">
-    <div class="test-flex-part">
-      <div class="test-flex-title">
-        title
-      </div>
-      <div class="test-flex-content">
-        content
-      </div>
-    </div>
-    <div class="test-flex-part">
-      <div class="test-flex-title">
-        title
-      </div>
-      <div class="test-flex-content">
-        content
-      </div>
-    </div>
-    <div class="test-flex-part">
-      <div class="test-flex-title">
-        title
-      </div>
-      <div class="test-flex-content">
-        content
-      </div>
-    </div>
-    <div class="test-flex-part">
-      <div class="test-flex-title">
-        title
-      </div>
-      <div class="test-flex-content">
-        content
-      </div>
-    </div>
-  </div>
+    <ul class="list">
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+        <li>6</li>
+        <li>7</li>
+        <li>8</li>
+        <li>9</li>
+        <li>10</li>
+        <li>11</li>
+        <li>12</li>
+        <li>13</li>
+        <li>14</li>
+        <li>15</li>
+        <li>16</li>
+        <li>17</li>
+        <li>18</li>
+        <li>19</li>
+        <li>20</li>
+        <li>21</li>
+        <li>22</li>
+        <!-- 鼠标拖拽出的遮罩 （定位为  position:absolute）-->
+        <!-- 遮罩最好是在绑定了mouseover事件的元素内部，并且不要阻止遮罩的冒泡事件。这样鼠标移到了遮罩上面，依然可以利用冒泡执行父元素的mouseover事件，就不会出现遮罩只能扩大，不能缩小的情况了（亲自试过） -->
+        <div id="moveSelected"></div>
+    </ul>
 </body>
-
 </html>
+<script type="text/javascript">
+    $(document).ready(function(){
+        let moveSelected=$('#moveSelected')[0];
+        let flag=false;//是搜开启拖拽的标志
+        let start_x=0;//鼠标按下时的left,top
+        let start_y=0;
+        let selectedList=[];//拖拽多选选中的块集合
+
+        // 鼠标按下时开启拖拽多选，将遮罩定位并展现
+        $(".list").mousedown(function(event) {
+            flag=true;
+            moveSelected.style.top=event.pageY+'px';
+            moveSelected.style.left=event.pageX+'px';
+            start_x=event.pageX;
+            start_y=event.pageY;
+            event.preventDefault();  // 阻止默认行为
+            event.stopPropagation(); // 阻止事件冒泡
+        });
+        // 鼠标移动时计算遮罩的位置，宽 高
+        $(".list").mousemove(function(event) {
+            if(!flag) return;//只有开启了拖拽，才进行mouseover操作
+            if(event.pageX<start_x){//向左拖
+                moveSelected.style.left=event.pageX+'px';
+                moveSelected.style.width=(start_x-event.pageX)+'px';
+            }else{
+                moveSelected.style.width=(event.pageX-start_x)+'px';
+            }
+            if(event.pageY<start_y){//向上
+                moveSelected.style.top=event.pageY+'px';
+                moveSelected.style.height=(start_y-event.pageY)+'px';
+            }else{
+                moveSelected.style.height=(event.pageY-start_y)+'px';
+            }
+            event.preventDefault();  // 阻止默认行为
+            event.stopPropagation(); // 阻止事件冒泡
+        });
+        //鼠标抬起时计算遮罩的right 和 bottom，找出遮罩覆盖的块，关闭拖拽选中开关，清除遮罩数据
+        $(".list").mouseup(function(event) {
+            moveSelected.style.bottom=Number(moveSelected.style.top.split('px')[0])+Number(moveSelected.style.height.split('px')[0]) + 'px';
+            moveSelected.style.right=Number(moveSelected.style.left.split('px')[0])+Number(moveSelected.style.width.split('px')[0])+'px';
+            findSelected();
+            flag=false;
+            clearDragData();
+            event.preventDefault();  // 阻止默认行为
+            event.stopPropagation(); // 阻止事件冒泡
+        });
+        $(".list").mouseleave(function(event) {
+            flag=false;
+            moveSelected.style.width=0;
+            moveSelected.style.height=0;
+            moveSelected.style.top=0;
+            moveSelected.style.left=0;
+            event.preventDefault();  // 阻止默认行为
+            event.stopPropagation(); // 阻止事件冒泡
+        });
+        function findSelected(){
+            let blockList=$('.list').find('li');
+            for(let i=0;i<blockList.length;i++){
+                //计算每个块的定位信息
+                let left=$(blockList[i]).offset().left;
+                let right=$(blockList[i]).width()+left;
+                let top=$(blockList[i]).offset().top;
+                let bottom=$(blockList[i]).height()+top;
+                //判断每个块是否被遮罩盖住（即选中）
+                let leftFlag=moveSelected.style.left.split('px')[0]<=left && left<=moveSelected.style.right.split('px')[0];
+                let rightFlag=moveSelected.style.left.split('px')[0]<=right && right<=moveSelected.style.right.split('px')[0];
+                let topFlag=moveSelected.style.top.split('px')[0]<=top && top<=moveSelected.style.bottom.split('px')[0];
+                let bottomFlag=moveSelected.style.top.split('px')[0]<=bottom && bottom<=moveSelected.style.bottom.split('px')[0];
+                if((leftFlag || rightFlag) && (topFlag || bottomFlag)){
+                    selectedList.push(blockList[i]);
+                    $(blockList[i]).addClass('selected');
+                }
+            }
+            console.log(selectedList);
+        }
+        function clearDragData(){
+            moveSelected.style.width=0;
+            moveSelected.style.height=0;
+            moveSelected.style.top=0;
+            moveSelected.style.left=0;
+            moveSelected.style.bottom=0;
+            moveSelected.style.right=0;
+        }
+    });
+</script>

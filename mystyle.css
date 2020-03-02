@@ -107,7 +107,7 @@
   width: 800px;
   flex: 1;
 }
-
+/*
 ul {
   background-color: cornflowerblue;
 }
@@ -140,7 +140,7 @@ ul li::after {
   border-width: 15px 0 15px 15px;
   border-color: transparent transparent transparent #ccc;
   z-index: 10;
-}
+} */
 
 .tabContainer {
   background-color: darkgoldenrod;
