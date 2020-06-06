@@ -348,3 +348,145 @@ def fix_parse_upload_file():
     from app.actions.oss import download_oss_file
     file_key = 'Sms_2200696743476_1569400847780.txt'
     download_oss_file(file_key)
+
+
+def teeeee(*args):
+    print(dict(*args))
+
+def example_funccc(name, wid):
+    teeeee(name)\
+
+
+@cli.command()
+@click.option('--fix', is_flag=True, default=False)
+def fix_user_data(fix):
+    from datetime import datetime
+    vas_order_list = list(db.VasOrder.find())
+    uid2expire = {}
+    for vas_order in vas_order_list:
+        expire = uid2expire.get(vas_order['mall_id'])
+        order_expire = datetime.fromtimestamp(vas_order['pay_ts'] / 1000 + vas_order['time_length'])
+        if not expire or expire <= order_expire:
+            uid2expire[vas_order['mall_id']] = order_expire
+    click.echo(uid2expire)
+
+
+@cli.command()
+def get_acc():
+    import re
+    acc_re = re.compile('.*access_token\": \"([a-z0-9]+)')
+    accs = set()
+    with open('./log/app_remote/pdd.log-20200421') as log_file:
+        for line in log_file.readlines():
+            if "pdd.ad.history.report.get" in line:
+                rlt = acc_re.match(line)
+                if not rlt:
+                    click.echo(line)
+                    continue
+                accs.add(rlt.groups()[0])
+    click.echo(accs)
+
+
+@cli.command()
+def fix_createt():
+    import re
+    from datetime import datetime
+
+    acc_re = re.compile(r'[a-z\-\:\.0-9]+\[([0-9\-\,\:\s]+)\].*uid \[([0-9]+)\].*access_token \[([a-z0-9]+)\].*access_expire_at \[([0-9]+)\]')
+    accs = {}
+    with open('./log/app_remote/signal_user_login.log') as log_file:
+        for line in log_file.readlines():
+            rlt = acc_re.match(line)
+            if not rlt:
+                click.echo(line)
+                continue
+            uid, access_token, access_token_expire_ts = rlt.groups()
+            accs[uid] = (access_token, access_token_expire_ts)
+
+    click.echo(accs)
+
+
+
+@cli.command()
+def make_the_table():
+    import re
+    regx = re.compile('.*def (ad_api_[a-z_]+)')
+    rlt = ''
+    with open('app/ext/pdd_client_v2.py') as api_file:
+        for line in api_file.readlines():
+            match = regx.match(line)
+            if match:
+                rlt += '| pdd.' + match.groups()[0].replace('_', '.') + ' |  |\n'
+    print(rlt)
+
+
+
+@cli.command()
+def testttt():
+    from datetime import datetime
+    from app.ext.pdd_client_v2 import ads_client, OrderBy, ReportQueryType
+    from app.models import constants
+    from pdd.pdd import PDDError
+
+    uid = 425740142
+    user = db.User.find_one({'uid': uid})
+    if not user:
+        click.echo("搞毛呢，没有用户" + str(uid))
+        return
+    access_token = user['access_token']
+
+    # plan_id = 27087426
+    # plan_name = '虎虎推广_推广123'
+    start_t = datetime(2020, 5, 29)
+    end_t = datetime(2020, 5, 29)
+    # for i in range(6, 14):
+    #     try:
+    #         res = ads_client.ad_api_plan_query_list(
+    #             access_token,
+    #             start_t,
+    #             end_t,
+    #             PLAN.SCENE_TYPE.SEARCH_ADV,
+    #         )
+    #     except PDDError as error:
+    #         click.echo('failed query %s %s' % (str(error), i))
+
+    # plan_id = 24564102
+    # max_cost = 240000
+    # discounts = [
+    #     {'index': 8, 'rate': 1400},
+    #     {'index': 12, 'rate': 2000},
+    #     {'index': 17, 'rate': 1000},
+    # ]
+    # plan_name = "推广男鞋_213"
+    unit_id = 162514380
+    # unit_name = '生日礼物abcdef'
+    plan_id = 24559051
+    deliver_type = 4
+    reference_type = 1
+    goods_id = 76163390719
+    # creative_title = '手工制作精美生日礼物'
+    # creative_id = 144815024
+    # creative_image = 'https://t00img.yangkeduo.com/goods/images/2019-12-13/d35871d8-9787-4c10-bc80-761afeed9bc1.jpg'
+    error_list = []
+    # res = ads_client.ad_api_unit_creative_update_smart_creative(
+    #     access_token,
+    #     creative_id,
+    #     '手工制作精致生日礼物'
+    # )
+    # for i in OrderBy.values():
+    #     try:
+    #         res = ads_client.plan_query_list(access_token,
+    #             start_t,
+    #             end_t,
+    #             order_by=i,
+    #         )
+    #         click.echo(res)
+    #     except PDDError as error:
+    #         click.echo('failed query %s %s' % (str(error), i))
+    #         error_list.append(i)
+    # click.echo('error_list %s' % error_list)
+    res = ads_client.unit_creative_query_flow_rate(
+        access_token,
+        unit_id,
+    )
+    click.echo(res)

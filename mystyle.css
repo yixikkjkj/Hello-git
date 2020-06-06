@@ -175,3 +175,11 @@ ul li::after {
 .tabAfter + .tabBefore {
   margin-left: -10px;
 }
+
+.srollContent {
+  width: 100%;
+}
+
+.srollContent .hoverLine:hover, .srollContent .hoverLine .whenHover {
+  background-color: wheat;
+}

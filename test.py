@@ -15,8 +15,44 @@ record = ntb['record']
 template = ntb['template']
 channel = ntb['channel']
 
+ads = c['pddads']
+user = ads['user']
+
+user.find_one({'uid': 425740142})
+user.find_one_and_update({'uid': 425740142}, {'$set': {'mobile': ''}})
+
+datetime.fromtimestamp
+
 sms = c['sms']
 act = sms['act_v2']
+
+mine = c['mine']
+test = mine['test']
+
+a = [{
+    'arg1': 1,
+    'arg2': 'a',
+    'sort': 10,
+}, {
+    'arg1': 2,
+    'arg2': 'b',
+    'sort': 9,
+}, {
+    'arg1': 3,
+    'arg2': 'c',
+    'sort': 8,
+}, {
+    'arg1': 4,
+    'arg2': 'd',
+    'sort': None,
+}, {
+    'arg1': 5,
+    'arg2': 'e',
+}]
+
+# arg1
+# arg2
+# arg3
 
 record.find({
     'user_id': ObjectId('5ceb967f4f9fc9321a88ab59'),
@@ -148,3 +184,17 @@ def reply():
     }
     r = requests.post('http://0.0.0.0:8010/hooks/sender/chuanglan/reply/5dd3c09468c8d54b6eb09a88', chuanglan_replys)
     print(r)
+
+
+class TheWrapper:
+    def call(self, *args, **kwargs):
+        print(args)
+        print(kwargs)
+
+    def __getattr__(self, func_name):
+        def wrapper(*args, **kwargs):
+            print(args)
+            print(kwargs)
+            self.call(*args, **kwargs)
+
+        return wrapper
