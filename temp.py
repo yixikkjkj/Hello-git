@@ -490,3 +490,22 @@ def testttt():
         unit_id,
     )
     click.echo(res)
+
+
+@cli.command()
+def testttt():
+    from datetime import datetime, timedelta
+
+    from app.ext.pdd_client_v2 import ads_client, ReportQueryType
+    from app.tasks import account as account_tasks
+
+    uid = 961007696
+    user = db.User.find_one({'uid': uid})
+
+    # account_tasks.sync_user_plans(uid, user['access_token'])
+
+    ads_client.report_daily_report_query(
+        user['access_token'],
+        datetime(2020, 6, 7), datetime(2020, 6, 8) - timedelta(seconds=1),
+        ReportQueryType.Keyword, 1557590162, unit_id=79940251
+    )

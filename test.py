@@ -114,9 +114,7 @@ def get_unique_id():
 def check_shenfenzheng(shenfen_str):
     xishu = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2]
     tmp = sum([xishu[index] * int(shenfen_str[index]) for index in range(17)])
-    print(tmp)
     check = ['1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2']
-    print(check[tmp % 11])
     assert shenfen_str[17] == check[tmp % 11]
 
 
