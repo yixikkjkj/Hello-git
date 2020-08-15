@@ -24,15 +24,29 @@ class Solution:
     def findMedianSortedArrays(self, nums1, nums2) -> float:
         total = len(nums1) + len(nums2)
         if total % 2:
-            idx = int((total - 1) / 2)
+            return float(self.getK(nums1, nums2, (total + 1) // 2 - 1))
         else:
-            idx = total / 2 - 1
+            return (self.getK(nums1, nums2, total // 2 - 1) + self.getK(nums1, nums2, total // 2)) / 2
 
-        # 在两个正序列表中找到 idx 位置的数
-        f1, f2 = 0, 0
-        i, j = idx / 2 - 1, idx / 2 - 1
-        while i + j != idx:
-            pass
+    def getK(self, nums1, nums2, k):
+        temp_k = k
+        idx1, idx2 = 0, 0
+        while True:
+            if idx1 == len(nums1):
+                return nums2[idx2 + k]
+            if idx2 == len(nums2):
+                return nums1[idx1 + k]
+            if k == 0:
+                return min(nums1[idx1], nums2[idx2])
+
+            validx1 = min(idx1 + (k - 1) // 2, len(nums1) - 1)
+            validx2 = min(idx2 + (k - 1) // 2, len(nums2) - 1)
+            if nums1[validx1] <= nums2[validx2]:
+                k -= validx1 - idx1 + 1
+                idx1 = validx1 + 1
+            else:
+                k -= validx2 - idx2 + 1
+                idx2 = validx2 + 1
 
 
 if __name__ == "__main__":

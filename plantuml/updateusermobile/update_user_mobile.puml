@@ -1,0 +1,18 @@
+@startuml update user mobile
+start
+:进入首页;
+if (展示新手引导) then (yes)
+  if (用户未开户) then (yes)
+    :替换新手引导第一步，改为红包和引导手机号码入口;
+  else (no)
+    :展示新手引导内容;
+  endif
+else (no)
+  if (用户未开户) then (yes)
+    :展示红包和引导手机号码入口;
+  else (no)
+    :直接弹出弹层，填写号码;
+  endif
+endif
+stop
+@enduml
