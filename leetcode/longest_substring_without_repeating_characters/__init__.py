@@ -11,6 +11,7 @@ class Solution:
 
         return longest
 
+
 if __name__ == "__main__":
     s = 'abcabcbb'
     sol = Solution()
