@@ -1,0 +1,8 @@
+#!/bin/bash
+
+ROOT_DIR="$( cd "$( dirname "$BASH_SOURCE[0]" )/.." && pwd )"
+uid_list="8298818 752496429 208910974 916582295 527907889 374144298 446670077 285162076 299629400 477507666 185972924 413799007 499338949 7580194 823344355 621845104 751140020 575725332 846808547 427598183"
+for uid in $uid_list;
+do
+  grep "\[BALANCE_LOG\] user \[$uid\]" $ROOT_DIR/log/app/app.log* > /tmp/account_balance_$uid.log
+done

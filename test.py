@@ -196,3 +196,57 @@ class TheWrapper:
             self.call(*args, **kwargs)
 
         return wrapper
+
+
+def analysis_user_balance_log():
+    import json
+    import re
+    from datetime import datetime
+    # [\/a-z\.\:0-9]+
+    match_str = r'.*\[([0-9\-\s\:\,]+)\].*user \[([0-9]+)\] balance changed \[([0-9]+)\]->\[([0-9]+)\] \[(.*)\]->\[(.*)\]'
+    complied_str = re.compile(match_str)
+
+    uid_list = [
+        8298818, 752496429, 208910974, 916582295, 527907889, 374144298,
+        446670077, 285162076, 299629400, 477507666, 185972924, 413799007,
+        499338949, 7580194, 823344355, 621845104, 751140020, 575725332,
+        846808547, 427598183
+    ]
+    uid2name = {
+        7580194: '雅瓷卫浴',
+        8298818: '港岛妹妹大卖铺',
+        185972924: '清华课外书屋',
+        208910974: '冠茗珠宝',
+        285162076: '小陶的百宝店',
+        299629400: '减龄俏佳人时装店',
+        374144298: '冀宠宠物用品官方旗舰店',
+        413799007: '鹏的精品店',
+        427598183: '铂丽餐具',
+        446670077: '依卡妮厂家店',
+        477507666: '欣蕊毛绒玩具店',
+        499338949: '爱玛女鞋店',
+        527907889: '状元百货管',
+        575725332: '智能门锁5',
+        621845104: '贝兹童装',
+        751140020: '健之优品',
+        752496429: 'The One男装店',
+        823344355: '富七狼男装旗舰店',
+        846808547: '顶柔之心',
+        916582295: '恒而美数码'
+    }
+    dir_path = '/Users/wangyijun/ads/log/remote/user_balance/account_balance'
+    for uid in uid_list:
+        print('用户ID,店名,时间,旧余额,新余额')
+        with open(dir_path + 'account_balance_' + str(uid)) as file_obj:
+            for line in file_obj.readlines():
+                match_rlt = complied_str.match(line)
+                if not match_rlt:
+                    print(line)
+                rlt = match_rlt.groups()
+                record_time = datetime.strptime(rlt[0], '%Y-%m-%d %H:%M:%S,%f')
+                old_balance = int(rlt[2])
+                new_balance = int(rlt[3])
+                old_accounts = json.loads(rlt[4].replace('\'', '\"'))
+                new_accounts = json.loads(rlt[5].replace('\'', '\"'))
+                print(','.join([str(uid), uid2name[uid], record_time, old_balance, new_balance]))
+        print('\n')
