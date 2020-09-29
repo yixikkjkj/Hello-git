@@ -1,3 +1,4 @@
+
 import blinker
 from bson import ObjectId
 from datetime import datetime
@@ -509,3 +510,110 @@ def testttt():
         datetime(2020, 6, 7), datetime(2020, 6, 8) - timedelta(seconds=1),
         ReportQueryType.Keyword, 1557590162, unit_id=79940251
     )
+
+
+
+def analysis_nginx_logs():
+    import re
+    from datetime import datetime
+    old_log_str = r'([0-9\.]+) - - \[([^\]]+)\] "([^\"]+)" ([0-9]+) ([0-9]+) "([^\"]+)" "([^\"]+)"'
+    log_str = r'([0-9\.]+) - - \[([^\]]+)\] "([^\"]+)" ([0-9]+) ([0-9]+) ([0-9\.]+) "([^\"]+)" "([^\"]+)"'
+    old_comp = re.compile(old_log_str)
+    log_comp = re.compile(log_str)
+
+    file_path = '/Users/wangyijun/ads/log/remote/nginx/access.log-20200923'
+    rlt = []
+    with open(file_path, 'r') as file_obj:
+        for line in file_obj.readlines():
+            old_match = old_comp.match(line)
+            match = log_comp.match(line)
+            if old_match:
+                data = old_match.groups()
+                rlt.append({
+                    'remote_addr': data[0],
+                    'time_local': datetime.strptime(data[1], '%d/%b/%Y:%H:%M:%S +%f'),
+                    'request': data[2],
+                    'status': data[3],
+                    'bytes_sent': data[4],
+                    'request_time': None,
+                    'refer': data[5],
+                    'user_agent': data[6],
+                })
+            if match:
+                data = match.groups()
+                rlt.append({
+                    'remote_addr': data[0],
+                    'time_local': datetime.strptime(data[1], '%d/%b/%Y:%H:%M:%S +%f'),
+                    'request': data[2],
+                    'status': data[3],
+                    'bytes_sent': data[4],
+                    'request_time': data[5],
+                    'refer': data[6],
+                    'user_agent': data[7],
+                })
+    return rlt
+
+
+def cb_and_vendors_and_post_cb():
+    import re
+    logs = analysis_nginx_logs()
+    cb_state_str = r'GET /cb\?code=([0-9a-z]+)&state=([^\s]+)'
+    cb_str = r'GET /cb\?code=([0-9a-z]+)'
+    vendors_str = r'GET /vendors'
+    post_cb_str = r'POST /api/user/cb'
+
+    cb_state_comp = re.compile(cb_state_str)
+    cb_comp = re.compile(cb_str)
+    vendors_comp = re.compile(vendors_str)
+    post_cb_comp = re.compile(post_cb_str)
+
+    rlt = {}
+
+    for data in logs:
+        if not data['remote_addr'] in rlt:
+            rlt[data['remote_addr']] = {
+                'woda_cb': 0,
+                'normal_cb': 0,
+                'vendors': 0,
+                'vendors_bytes': 0,
+                'post_cb': 0,
+            }
+        cb_state_match = cb_state_comp.match(data['request'])
+        cb_match = cb_comp.match(data['request'])
+        vendors_match = vendors_comp.match(data['request'])
+        post_cb_match = post_cb_comp.match(data['request'])
+        if cb_state_match:
+            match_data = cb_state_match.groups()
+            if match_data[1] == '%2Fb%3Ffrom%3Dwoda':  # woda
+                rlt[data['remote_addr']]['woda_cb'] += 1
+            else:
+                rlt[data['remote_addr']]['normal_cb'] += 1
+        if cb_match:
+            rlt[data['remote_addr']]['normal_cb'] += 1
+        if vendors_match:
+            rlt[data['remote_addr']]['vendors'] += 1
+            rlt[data['remote_addr']]['vendors_bytes'] += int(data['bytes_sent'])
+        if post_cb_match:
+            rlt[data['remote_addr']]['post_cb'] += 1
+
+    post_cb_count, woda_count = 0, 0
+    for remote_addr, data in rlt.items():
+        if data['woda_cb'] > 0:
+            print(remote_addr, data['woda_cb'], data['vendors'], data['post_cb'])
+            if data['post_cb'] <= 0:
+                print(data['vendors_bytes'])
+            woda_count += 1
+            if data['post_cb'] > 0:
+                post_cb_count += 1
+    print(woda_count, post_cb_count)
+
+
+def user_agent():
+    import json
+    logs = analysis_nginx_logs()
+    rlt = {}
+    for data in logs:
+        if not data['user_agent'] in rlt:
+            rlt[data['user_agent']] = 0
+        rlt[data['user_agent']] += 1
+    print(json.dumps(rlt))

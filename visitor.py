@@ -58,3 +58,22 @@ def get_days(year, month, day, period=1):
         month_days[1] = 29
     total_days += min(day, month_days[end_month - 1]) - 1
     return total_days
+
+
+def get_month_day(year, month):
+    month_list = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    is_leaper = False
+    if year % 400 == 0:
+        is_leaper = True
+    elif year % 4 == 0 and year % 100 != 0:
+        is_leaper = True
+    if is_leaper:
+        month_list[1] = 29
+    return month_list[month - 1]
+
+
+def first_month_cost(year, month, day, money):
+    per_money = money / 30
+    month_day = get_month_day(year, month)
+    first_month_day = min(month_day - day + 1, 30)
+    return first_month_day * per_money

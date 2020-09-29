@@ -43,6 +43,7 @@ main()
   makeTargetDir
   unzip -o ~/Python-Language-Server-osx-x64.0.5.51.nupkg -d ~/$targetDir
   chmod +x ~/${targetDir}Microsoft.Python.LanguageServer
+  echo "this damn python languageServer updated done in ${targetDir}"
 }
 
 main

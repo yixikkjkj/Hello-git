@@ -68,3 +68,14 @@ def getExpirationDate(year, month, day, period=1):
 
     end_day = min(day, month_days[end_month - 1])
     return (end_year, end_month, end_day)
+
+
+def test_first_month_cost():
+    test_case = {
+        (2020, 8, 18, 60): 28,
+        (2020, 8, 1, 60): 60,
+        (2020, 2, 1, 60): 58,
+        (2019, 2, 1, 60): 56,
+    }
+    for args, rlt in test_case.items():
+        assert visitor.first_month_cost(*args) == rlt
