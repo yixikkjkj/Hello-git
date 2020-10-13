@@ -250,3 +250,55 @@ def analysis_user_balance_log():
                 new_accounts = json.loads(rlt[5].replace('\'', '\"'))
                 print(','.join([str(uid), uid2name[uid], record_time, old_balance, new_balance]))
         print('\n')
+
+
+def count_log_api():
+    import re
+    request_str = r'\[([^\]]+)\]\[[A-Z]+\]\[([0-9a-z]+)\] call \[([a-z\.]+)\] with (.*)'
+    resp_str = r'\[([^\]]+)\]\[[A-Z]+\]\[([0-9a-z]+)\] return \<[0-9]+\> (.*)'
+    request_comp = re.compile(request_str)
+    resp_comp = re.compile(resp_str)
+
+    file_name = '/Users/wangyijun/ads/log/remote/pdd.log-20201010'
+    temp_id = {}
+    api_rlt = {}
+    with open(file_name, 'r') as file_obj:
+        for line in file_obj.readlines():
+            req = request_comp.match(line)
+            resp = resp_comp.match(line)
+            if req:
+                data = req.groups()
+                req_id = data[1]
+                api_str = data[2]
+                req_length = len(data[3])
+                temp_id[req_id] = api_str
+                if api_str not in api_rlt:
+                    api_rlt[api_str] = {
+                        'line': 0,
+                        'req_length': 0,
+                        'resp_length': 0,
+                    }
+                api_rlt[api_str]['line'] += 1
+                api_rlt[api_str]['req_length'] += req_length
+            elif resp:
+                data = resp.groups()
+                req_id = data[1]
+                resp_length = len(data[2])
+                api_str = temp_id.pop(req_id, None)
+                if not api_str:
+                    print(data)
+                    continue
+                if api_str not in api_rlt:
+                    api_rlt[api_str] = {
+                        'line': 0,
+                        'req_length': 0,
+                        'resp_length': 0,
+                    }
+                api_rlt[api_str]['line'] += 1
+                api_rlt[api_str]['resp_length'] += resp_length
+            else:
+                print(line)
+    rlt = [(api_str, data['line'], data['req_length'], data['resp_length']) for api_str, data in api_rlt.items()]
+    rlt.sort(key=lambda x: x[2], reverse=True)
+    for data in rlt:
+        print(data)
