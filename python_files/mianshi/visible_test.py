@@ -1,4 +1,4 @@
-import visitor
+from . import visitor
 
 
 def test_get_expire_time():
