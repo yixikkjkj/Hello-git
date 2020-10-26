@@ -617,3 +617,59 @@ def user_agent():
             rlt[data['user_agent']] = 0
         rlt[data['user_agent']] += 1
     print(json.dumps(rlt))
+
+
+def app_log():
+    import re
+    app_log = r'\[([^\]]+)\]\[([A-Z]+)\]\[[^\]]+\]\[[^\]]+\]\[[^\]]+\]: (.*)'
+    app_comp = re.compile(app_log)
+
+    error_log = r'user \[([0-9]+)\]\[([0-9]+)\]\[([0-9]+)\] ([a-z\s]+) error: (.*)'
+    error_comp = re.compile(error_log)
+
+    user_error = {}
+
+    plan_ids = set()
+    with open('/Users/wangyijun/ads/log/remote/app_error.log') as file_obj:
+        for line in file_obj.readlines():
+            log_match = app_comp.match(line)
+            if not log_match:
+                print(line)
+                continue
+            data = log_match.groups()
+            log_t = data[0]  # datetime.strptime(data[0], '%Y-%m-%d %H:%M:%S,%f')
+            log_level = data[1]
+            log_str = data[2]
+            error_match = error_comp.match(log_str)
+            if not error_match:
+                print(line)
+                continue
+            data = error_match.groups()
+            uid = int(data[0])
+            plan_id = int(data[1])
+            unit_id = int(data[2])
+            error_str = data[3]
+            plan_ids.add(plan_id)
+            if not error_str in user_error:
+                user_error[error_str] = {}
+            if not uid in user_error[error_str]:
+                user_error[error_str][uid] = {}
+            if not plan_id in user_error[error_str][uid]:
+                user_error[error_str][uid][plan_id] = {}
+            if not unit_id in user_error[error_str][uid][plan_id]:
+                user_error[error_str][uid][plan_id][unit_id] = []
+            user_error[error_str][uid][plan_id][unit_id].append(log_t)
+
+    print(list(plan_ids))
+
+    for error_str, user_data in user_error.items():
+        print(error_str)
+        for uid, plan_data in user_data.items():
+            print(uid)
+            for plan_id, unit_data in plan_data.items():
+                print(plan_id)
+                for unit_id, time_data in unit_data.items():
+                    print(unit_id, len(time_data))
+                    print(time_data)
+            print('\n')
+        print('\n\n')
