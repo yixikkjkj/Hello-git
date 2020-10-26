@@ -1,0 +1,14 @@
+@startuml 广告有效性模型
+partition 选择 {
+  :曝光;
+  :关注;
+}
+partition 解释 {
+  :理解;
+  :接受;
+}
+partition 态度 {
+  :保持;
+  :决策;
+}
+@enduml

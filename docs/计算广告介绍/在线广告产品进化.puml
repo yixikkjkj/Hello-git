@@ -1,0 +1,25 @@
+@startuml 在线广告产品进化
+storage 线下广告
+storage CPT广告
+storage 展示量合约广告
+rectangle 精准定向广告
+rectangle 搜索广告
+rectangle 上下文广告
+rectangle 社交网络广告
+rectangle 信息流广告
+rectangle 一般竞价广告
+rectangle 植入式原生广告
+rectangle 程序化交易广告
+线下广告 --> CPT广告
+note right of 线下广告:椭圆形的是合约广告，矩形的是竞价广告
+CPT广告 --> 展示量合约广告
+展示量合约广告 --> 精准定向广告
+搜索广告 --> 上下文广告
+社交网络广告 --> 信息流广告
+搜索广告 --> 信息流广告
+精准定向广告 --> 一般竞价广告
+上下文广告 --> 一般竞价广告
+信息流广告 --> 植入式原生广告
+一般竞价广告 --> 植入式原生广告
+一般竞价广告 --> 程序化交易广告
+@enduml
