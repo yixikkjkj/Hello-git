@@ -511,22 +511,15 @@ def testttt():
         ReportQueryType.Keyword, 1557590162, unit_id=79940251
     )
 
-
-
-def analysis_nginx_logs():
+def old_analysis_nginx_log():
     import re
-    from datetime import datetime
     old_log_str = r'([0-9\.]+) - - \[([^\]]+)\] "([^\"]+)" ([0-9]+) ([0-9]+) "([^\"]+)" "([^\"]+)"'
-    log_str = r'([0-9\.]+) - - \[([^\]]+)\] "([^\"]+)" ([0-9]+) ([0-9]+) ([0-9\.]+) "([^\"]+)" "([^\"]+)"'
     old_comp = re.compile(old_log_str)
-    log_comp = re.compile(log_str)
-
-    file_path = '/Users/wangyijun/ads/log/remote/nginx/access.log-20200923'
+    file_path = '/Users/wangyijun/ads/log/remote/access.log-20201027'
     rlt = []
     with open(file_path, 'r') as file_obj:
         for line in file_obj.readlines():
             old_match = old_comp.match(line)
-            match = log_comp.match(line)
             if old_match:
                 data = old_match.groups()
                 rlt.append({
@@ -539,6 +532,17 @@ def analysis_nginx_logs():
                     'refer': data[5],
                     'user_agent': data[6],
                 })
+
+def analysis_nginx_logs(file_path):
+    import re
+    from datetime import datetime
+    log_str = r'([0-9\.]+) - - \[([^\]]+)\] "([^\"]+)" ([0-9]+) ([0-9]+) ([0-9\.]+) "([^\"]+)" "([^\"]+)"'
+    log_comp = re.compile(log_str)
+
+    rlt = []
+    with open(file_path, 'r') as file_obj:
+        for line in file_obj.readlines():
+            match = log_comp.match(line)
             if match:
                 data = match.groups()
                 rlt.append({
@@ -554,9 +558,41 @@ def analysis_nginx_logs():
     return rlt
 
 
+def cb_why_users_not_come():
+    import re
+    file_path = '/Users/wangyijun/ads/log/remote/access.log-20201027'
+    logs = analysis_nginx_logs(file_path)
+    cb_state_str = r'GET /cb\?code=([0-9a-z]+).*'
+    cb_state_comp = re.compile(cb_state_str)
+
+    rlt = {}
+    for data in logs:
+        cb_state_match = cb_state_comp.match(data['request'])
+        if cb_state_match:
+            if not data['user_agent'] in rlt:
+                rlt[data['user_agent']] = set()
+            rlt[data['user_agent']].add(data['remote_addr'])
+
+    print('total infofofofo', len(rlt))
+    for user_agent, data in rlt.items():
+        print(user_agent)
+        print(len(data))
+
+"""
+    "106.114.140.85" # xxxx
+    "218.1.238.15"  # todo
+    "223.74.213.32"
+    "59.110.161.188"
+    "223.74.207.137"
+    "39.105.57.43"
+    "47.94.230.236"
+"""
+
+
 def cb_and_vendors_and_post_cb():
     import re
-    logs = analysis_nginx_logs()
+    file_path = '/Users/wangyijun/ads/log/remote/access.log-20200923'
+    logs = analysis_nginx_logs(file_path)
     cb_state_str = r'GET /cb\?code=([0-9a-z]+)&state=([^\s]+)'
     cb_str = r'GET /cb\?code=([0-9a-z]+)'
     vendors_str = r'GET /vendors'
@@ -673,3 +709,7 @@ def app_log():
                     print(time_data)
             print('\n')
         print('\n\n')
+
+
+def is_that_the_test(acc, status, *plan_id):
+    print(acc, status, plan_id)

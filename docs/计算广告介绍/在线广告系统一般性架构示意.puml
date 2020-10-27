@@ -1,0 +1,81 @@
+@startuml 在线广告系统一般性架构示意图
+database 结构化标签库
+database dashboard
+rectangle ETL
+database cube
+cloud Web
+rectangle 半在线页面抓取
+frame 分布式计算平台 {
+  rectangle 行为定向
+  rectangle 点击率建模
+  rectangle 分配规划
+  rectangle 用户会话日志生成
+}
+rectangle 定制化用户划分
+database 页面标签
+database 用户标签
+database CTR模型与特征
+database 分配方案
+rectangle Web服务器
+frame 广告投放机 {
+  rectangle 广告检索
+  rectangle 广告排序
+  rectangle 收益管理
+}
+entity 用户
+entity RTBS
+database 广告索引
+database 实时用户标签
+database 实时点击率特征
+database 广告库
+rectangle 实时索引
+frame 流计算平台 {
+  rectangle 实时受众定向
+  rectangle 实时点击反馈
+  rectangle 计费
+  rectangle 反作弊
+}
+queue 数据高速公路
+结构化标签库 --> 半在线页面抓取
+结构化标签库 --> 行为定向
+半在线页面抓取 --> 页面标签
+行为定向 --> 用户标签
+行为定向 --> 点击率建模
+页面标签 --> 广告检索
+广告检索 --> 广告排序
+广告排序 --> 收益管理
+收益管理 --> 数据高速公路
+用户标签 --> 广告检索
+点击率建模 --> CTR模型与特征
+CTR模型与特征 --> 广告排序
+Web --> 结构化标签库
+Web --> 半在线页面抓取
+Web --> 定制化用户划分
+定制化用户划分 --> Web服务器
+定制化用户划分 --> 数据高速公路
+Web服务器 --> 用户
+Web服务器 --> RTBS
+Web服务器 --> 广告检索
+数据高速公路 --> 用户会话日志生成
+数据高速公路 --> 反作弊
+用户会话日志生成 --> 分配规划
+用户会话日志生成 --> ETL
+用户会话日志生成 --> 点击率建模
+分配规划 --> 分配方案
+ETL --> dashboard
+ETL --> cube
+点击率建模 --> CTR模型与特征
+反作弊 --> 计费
+反作弊 --> 实时受众定向
+反作弊 --> 实时点击反馈
+计费 --> 实时索引
+实时受众定向 --> 实时用户标签
+实时点击反馈 --> 实时点击率特征
+实时索引 --> 广告索引
+广告索引 --> 广告检索
+实时受众定向 --> 实时用户标签
+实时用户标签 --> 广告排序
+实时点击率特征 --> 广告排序
+广告库 --> 实时索引
+cube --> 广告库
+@enduml
