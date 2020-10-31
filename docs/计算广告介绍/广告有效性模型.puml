@@ -1,14 +1,20 @@
 @startuml 广告有效性模型
-partition 选择 {
-  :曝光;
-  :关注;
+left to right direction
+rectangle 选择 {
+  usecase 曝光
+  usecase 关注
 }
-partition 解释 {
-  :理解;
-  :接受;
+rectangle 解释 {
+  usecase 理解
+  usecase 接受
 }
-partition 态度 {
-  :保持;
-  :决策;
+rectangle 态度 {
+  usecase 保持
+  usecase 决策
 }
+曝光 --> 关注
+关注 --> 理解
+理解 --> 接受
+接受 --> 保持
+保持 --> 决策
 @enduml
