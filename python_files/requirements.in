@@ -1,0 +1,18 @@
+-i https://pypi.doubanio.com/simple
+# requirements.in
+
+fastapi
+pydantic
+
+# code lint
+autopep8
+flake8
+pylint
+pytest
+pytest-cov
+yapf
+
+# lda model
+jieba
+gensim
+nltk
