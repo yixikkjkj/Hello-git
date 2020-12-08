@@ -4,6 +4,55 @@
   box-sizing: border-box;
 }
 
+.navItem {
+  position: relative;
+  height: 100px;
+  width: 300px;
+  background-color: black;
+}
+
+.navList {
+  position: absolute;
+  top: 100px;
+  width: 300px;
+  display: none;
+  list-style: none;
+}
+
+.navItem:hover .navList {
+  display: inherit;
+}
+
+.arrow {
+  width: 500px;
+  height: 100px;
+  border-style: solid;
+  border-width: 50px 0px 50px 12px;
+  border-color: red transparent;
+}
+
+.rectangle {
+    float: left;
+    position: relative;
+    height: 80px;
+    width: 240px;
+    border: solid 1px #ccc;
+    border-right: none;
+    background: #eee linear-gradient(white, #f1f1f1 37%, #e1e1e1 57%, #f6f6f6);
+    cursor: pointer;
+}
+.rectangle:after {
+    position: absolute;
+    top: 16px; right: -25px;
+    width: 48px;
+    height: 47px;
+    border-left: solid 1px #ccc;
+    border-top: solid 1px #ccc;
+    transform: rotate(134deg) skewX(-10deg) skewY(-10deg);
+    background: #eee linear-gradient(45deg, white, #f1f1f1 37%, #e1e1e1 57%, #f6f6f6);
+    content: '';
+}
+
 .someclass {
   color: #fff;
   background-color: #000000;

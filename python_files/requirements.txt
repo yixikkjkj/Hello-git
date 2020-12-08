@@ -21,11 +21,11 @@ importlib-metadata==2.0.0  # via flake8, pluggy, pytest
 iniconfig==1.1.1          # via pytest
 isort==5.6.4              # via pylint
 jieba==0.42.1             # via -r requirements.in
-joblib==0.17.0            # via nltk
+joblib==0.17.0            # via nltk, scikit-learn
 lazy-object-proxy==1.4.3  # via astroid
 mccabe==0.6.1             # via flake8, pylint
 nltk==3.5                 # via -r requirements.in
-numpy==1.19.4             # via gensim, scipy
+numpy==1.19.4             # via gensim, scikit-learn, scipy
 packaging==20.4           # via pytest
 pluggy==0.13.1            # via pytest
 py==1.9.0                 # via pytest
@@ -38,10 +38,13 @@ pytest-cov==2.10.1        # via -r requirements.in
 pytest==6.1.2             # via -r requirements.in, pytest-cov
 regex==2020.10.28         # via nltk
 requests==2.24.0          # via smart-open
-scipy==1.5.4              # via gensim
+scikit-learn==0.23.2      # via sklearn
+scipy==1.5.4              # via gensim, scikit-learn
 six==1.15.0               # via astroid, gensim, packaging
+sklearn==0.0              # via -r requirements.in
 smart-open==3.0.0         # via gensim
 starlette==0.13.6         # via fastapi
+threadpoolctl==2.1.0      # via scikit-learn
 toml==0.10.1              # via autopep8, pylint, pytest
 tqdm==4.51.0              # via nltk
 typed-ast==1.4.1          # via astroid

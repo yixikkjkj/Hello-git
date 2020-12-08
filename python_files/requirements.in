@@ -16,3 +16,4 @@ yapf
 jieba
 gensim
 nltk
+sklearn

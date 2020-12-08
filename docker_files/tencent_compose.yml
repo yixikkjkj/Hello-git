@@ -1,0 +1,9 @@
+version: "2"
+
+services:
+  nginx:
+    image: nginx:1.17
+    volumes:
+      - /root/simple_html/nginx:/etc/nginx/conf.d/
+      - /root/simple_html:/usr/share/nginx/html/
+      - /root/simple_html/log:/var/log/nginx/

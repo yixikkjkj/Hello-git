@@ -203,3 +203,43 @@ function upload_file() {
   //     },
   //   });
   // }
+
+
+function sumByType(array) {
+  const temp = array.reduce((prev, curr) => {
+    var now_val = prev[curr.type] ? prev[curr.type] : 0;
+    prev[curr.type] = now_val + curr.value;
+    return prev;
+  }, Object.create(null));
+
+  var rlt = [];
+  for (const key in temp) {
+    rlt.push({ type: key, value: temp[key] });
+  }
+  return rlt;
+}
+
+function resetSendGuide() {
+  [0, 1, 2, 3].map(function (index) {
+    [0, 1, 2, 3, 4].map(function (content_index) {
+      $.ajax({
+        url: '/common/sms/act/send_guide/set',
+        type: "POST",
+        data: {key: `act_${index}_${content_index}`, act_id: ''},
+        dataType: "json",
+        success: function (res) {
+          if (res.success) {
+            console.log('重置成功');
+          } else {
+            console.log('重置失败');
+          }
+        },
+        error: function () {
+          console.log("重置出错");
+        }
+      });
+    });
+  });
+}
+
+resetSendGuide()
