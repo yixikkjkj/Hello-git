@@ -403,3 +403,15 @@ def testttt():
     unit_id = 81343978
     plan_orm.sync_plan_statistics(access_token, plan_id, begin_date=datetime(2020, 2, 1))
     unit_orm.sync_unit_statistics(access_token, plan_id, unit_id, begin_date=datetime(2020, 2, 1))
+
+
+def transsssss():
+    file_path = '/Users/wangyijun/Documents/过期用户1130-1205.csv'
+    target_path = '/Users/wangyijun/Documents/过期用户1130-1205(转码).csv'
+    data = b''
+    with open(file_path, 'r') as file_obj:
+        for line in file_obj:
+            line = line.encode('gbk')
+            data += line
+    with open(target_path, 'wb+') as file_obj:
+        file_obj.write(data)
