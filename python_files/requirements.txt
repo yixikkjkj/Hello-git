@@ -40,6 +40,7 @@ regex==2020.10.28         # via nltk
 requests==2.24.0          # via smart-open
 scikit-learn==0.23.2      # via sklearn
 scipy==1.5.4              # via gensim, scikit-learn
+selenium==3.141.0         # via -r requirements.in
 six==1.15.0               # via astroid, gensim, packaging
 sklearn==0.0              # via -r requirements.in
 smart-open==3.0.0         # via gensim
@@ -48,7 +49,7 @@ threadpoolctl==2.1.0      # via scikit-learn
 toml==0.10.1              # via autopep8, pylint, pytest
 tqdm==4.51.0              # via nltk
 typed-ast==1.4.1          # via astroid
-urllib3==1.25.11          # via requests
+urllib3==1.25.11          # via requests, selenium
 wrapt==1.12.1             # via astroid
 yapf==0.30.0              # via -r requirements.in
 zipp==3.4.0               # via importlib-metadata

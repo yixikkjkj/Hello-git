@@ -17,3 +17,5 @@ jieba
 gensim
 nltk
 sklearn
+
+selenium
