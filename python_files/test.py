@@ -340,3 +340,44 @@ def plan_data_compare():
     # rlt_items.sort(key=lambda x: x[1][0], reverse=True)
     # for data in rlt_items:
     #     print(data)
+
+
+class TestA:
+    def __new__(cls, *args, **kwargs):
+        print(args, kwargs)
+        return super().__new__(cls)
+
+    def __init__(self, *args, **kwargs):
+        print(args, kwargs)
+
+
+args = [1,'a', 'z']
+kwargs = {
+    'a': 1,
+    'b': 'z',
+}
+
+test_a = TestA(*args, **kwargs)
+
+import pydantic
+from datetime import datetime
+
+class DateTimeRange(pydantic.BaseModel):
+    start_t: datetime = None
+    end_t: datetime = None
+
+    @pydantic.root_validator
+    def validator_datetime(cls, values):
+        st, et = values.get('start_t'), values.get('end_t')
+        if not st or not et:
+            raise ValueError('start_t and end_t should be supplied.')
+        if st > et:
+            raise ValueError('start_t should less than end_t')
+        return values
+
+    def __new__(cls, *args, **kwargs):
+        print(args, kwargs)
+        start_t_default_func = args[-1]
+        end_t_default_func = args[-2]
+        args = args[2:]
+        return super().__new__(cls, *args, **kwargs)

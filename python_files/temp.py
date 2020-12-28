@@ -713,3 +713,10 @@ def app_log():
 
 def is_that_the_test(acc, status, *plan_id):
     print(acc, status, plan_id)
+
+
+def airuiwang():
+    """
+https://www.iresearch.cn/include/ajax/user_ajax.ashx?work=idown&rid=3679
+    """
+    urls = ''
