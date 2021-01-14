@@ -1,0 +1,35 @@
+@startuml 曝光
+start
+note left
+  创建
+end note
+:调用创建接口;
+:保存创建的Plan;
+:保存跟随创建的Unit;
+:更新关键词价格和托管最高限价;
+if (曝光托管) then (yes)
+  :记录关键词最高价格;
+endif
+end
+start
+note left
+  调价逻辑
+end note
+:选中曝光策略计划;
+:选中计划下的关键词;
+while (每个关键词)
+  :取上三次操作的记录;
+  :取对应时间范围内的报告数据;
+  if (展现增长中&&单小时展现量达到20) then (yes)
+    :不再调价;
+  else (no)
+    :增长价格;
+    (A)
+  endif
+endwhile
+end
+(A)
+:取关键词最大价格和计划关键词限价最小值;
+:增加其二十分之一的价格;
+:保存关键词和操作记录;
+@enduml
